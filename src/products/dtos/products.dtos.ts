@@ -4,32 +4,67 @@ import {
   IsUrl,
   IsNotEmpty,
   IsPositive,
+  IsArray,
+  IsOptional,
+  Min,
+  ValidateIf,
 } from 'class-validator';
-// import { PartialType } from '@nestjs/mapped-types'; // se cambia por PartialType de nestjs swagger module, ya que se esta usando nestjs swagger module para documentar la api. ambas opciones cumplen la misma funcion que es la de crear un tipo que acepte propiedades parciales y asi no tener que repetir las propiedades en el objeto de configuracion del decorador @Body de nestjs.
 import { PartialType, ApiProperty } from '@nestjs/swagger';
 
 export class CreateProductDto {
-  @IsString({ message: 'El nombre no es un texto' }) // Validación de tipo de dato con class-validator y mensaje personalizado en caso de error de validación de tipo de dato.
+  @IsString()
   @IsNotEmpty()
-  @ApiProperty({ description: `product's name` }) // documentacion de swagger para el campo name del objeto CreateProductDto con description opcional en el objeto de configuracion del decorador @ApiProperty de nestjs swagger module.
+  @ApiProperty({ description: `product's name` })
   readonly name: string;
 
   @IsString()
   @IsNotEmpty()
+  @ApiProperty()
   readonly description: string;
 
   @IsNumber()
   @IsNotEmpty()
-  @IsPositive({ allowNaN: false }) // Validación de número positivo con class-validator y opción allowNaN en false para no permitir valores NaN.
+  @IsPositive()
+  @ApiProperty()
   readonly price: number;
 
   @IsNumber()
   @IsNotEmpty()
+  @ApiProperty()
   readonly stock: number;
 
   @IsUrl()
   @IsNotEmpty()
+  @ApiProperty()
   readonly image: string;
+
+  @IsPositive()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly brandId: number;
+
+  @IsArray() // este decorador es para validar que el campo sea un arreglo
+  @IsNotEmpty() // este decorador es para validar que el campo no este vacio
+  @ApiProperty() // este decorador es para documentar la propiedad
+  readonly categoriesIds: number[];
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
+
+export class FilterProductsDto {
+  @IsOptional()
+  @IsPositive()
+  limit: number;
+
+  @IsOptional()
+  @Min(0)
+  offset: number;
+
+  @IsOptional()
+  @IsPositive()
+  minPrice: number;
+
+  @ValidateIf((item) => item.minPrice) // este decorador permite validar el campo maxPrice solo si minPrice está definido
+  @IsPositive()
+  maxPrice: number;
+}

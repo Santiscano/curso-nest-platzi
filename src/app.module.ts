@@ -12,6 +12,7 @@ import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { DatabaseModule } from './database/database.module';
 import { enviroments } from './enviroments';
+import { AuthModule } from './auth/auth.module';
 import config from './config';
 
 @Module({
@@ -23,7 +24,7 @@ import config from './config';
       load: [config], // carga las variables de entorno definidas en el archivo config.ts, en este caso se carga el archivo config.ts que es como una capa de abstracción para las variables de entorno que contiene las variables de entorno que se llaman.
       isGlobal: true, // permite que las variables de entorno estén disponibles en toda la aplicación
       validationSchema: Joi.object({ // valida las variables de entorno con Joi
-        API_KEY: Joi.number().required(), // valida que la variable de entorno API_KEY sea un número y sea requerida
+        API_KEY: Joi.string().required(), // valida que la variable de entorno API_KEY sea un número y sea requerida
         DATABASE_NAME: Joi.string().required(), // valida que la variable de entorno DATABASE_NAME sea un string y sea requerida
         DATABASE_PORT: Joi.number().required(), // valida que la variable de entorno DATABASE_PORT sea un número y sea requerida
       }),
@@ -34,6 +35,7 @@ import config from './config';
     UsersModule,
     ProductsModule,
     DatabaseModule,
+    AuthModule,
   ],
   // *en los controllers se importan los controladores que se van a utilizar en la aplicacion, esto casi siempre es vacio, porque cada modulo tiene su propio controlador
   controllers: [AppController],

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Client } from 'pg';
+import * as bcrypt from 'bcrypt';
 
 import { User } from '../entities/user.entity';
 import { Order } from '../entities/order.entity';
@@ -10,6 +11,7 @@ import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
 
 import { ProductsService } from './../../products/services/products.service';
 import { CustomersService } from './customers.service';
+import { exec } from 'node:child_process';
 
 @Injectable()
 export class UsersService {
@@ -65,6 +67,11 @@ export class UsersService {
     return user;
   }
 
+  findByEmail(email: string) {
+    // return this.userModel.findOne({ email }).exec(); // asi seria con mongo
+    return this.userRepo.findOne({ where: { email } });
+  }
+
   // create(data: CreateUserDto) {
   //   this.counterId = this.counterId + 1;
   //   const newUser = {
@@ -76,6 +83,10 @@ export class UsersService {
   // }
   async create(data: CreateUserDto) {
     const newUser = this.userRepo.create(data);
+    // * esta seria la forma de  encriptar pero como cree un hook en la entidad user.entity.ts no es necesario
+    // const hashPassword = await bcrypt.hash(newUser.password, 10);
+    // newUser.password = hashPassword;
+
     if (data.customerId) {
       const customer = await this.customersService.findOne(data.customerId);
       newUser.customer = customer;

@@ -10,10 +10,12 @@ import {
   HttpStatus,
   HttpCode,
   Res,
+  UseGuards,
   // ParseIntPipe,
 } from '@nestjs/common';
 // import { Response } from 'express';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 import { ParseIntPipe } from '../../common/parse-int.pipe';
 import {
@@ -22,12 +24,19 @@ import {
   FilterProductsDto,
 } from '../dtos/products.dtos';
 import { ProductsService } from './../services/products.service';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/models/roles.model';
 
+// @UseGuards(AuthGuard('jwt')) // se le indica que tiene que pasar por el guardian jwt
+@UseGuards(JwtAuthGuard) // tiene que pasar por el guardian personalizado que internamente tiene el guardian jwt
 @ApiTags('products') // tag para documentar en swagger
 @Controller('products') // endpoint de la api
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
+  @Public() // le asigna a los metadatos de la funcion la propiedad isPublic con el valor true
   @Get()
   @ApiOperation({ summary: 'List of products' }) // documentacion de swagger para el endpoint get products con summary y description opcional en el objeto de configuracion del decorador @ApiOperation de nestjs swagger module.
   getProducts(
@@ -59,6 +68,7 @@ export class ProductsController {
     return this.productsService.findOne(productId);
   }
 
+  @Roles(Role.ADMIN) // asigna el rol a la metadata de la funcion
   @Post()
   create(@Body() payload: CreateProductDto) {
     // return {

@@ -11,14 +11,28 @@ import {
 
 import { UsersService } from '../services/users.service';
 import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
+import { ApiOperation } from '@nestjs/swagger';
 
+// *esto seria con mongo, y lo que hace es que no se muestren los campos de mongo que no queremos
+// @UseInterceptors(
+//   new SanitizeMongooseModelInterceptor({
+//     excludeMongooseId: false,
+//     excludeMongooseV: true,
+//   }),
+// )
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
+  @ApiOperation({ summary: 'List of users' })
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @Get('tasks')
+  tasks() {
+    return this.usersService.getTasks();
   }
 
   @Get(':id')

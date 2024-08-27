@@ -13,6 +13,9 @@ import { ProductsModule } from './products/products.module';
 import { DatabaseModule } from './database/database.module';
 import { enviroments } from './enviroments';
 import { AuthModule } from './auth/auth.module';
+import { SumService } from './testing/sum/sum.service';
+import { MatchesService } from './testing/matches.service';
+import { SetupTeardownService } from './testing/setup-teardown.service';
 import config from './config';
 
 @Module({
@@ -62,6 +65,9 @@ import config from './config';
       },
       inject: [HttpService], // inyecta el servicio HttpService en el proveedor de la petición HTTP para realizar la petición HTTP en el useFactory anteriormente escrito
     },
+    SumService,
+    MatchesService,
+    SetupTeardownService,
   ],
 })
 export class AppModule {}

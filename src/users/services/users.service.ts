@@ -82,7 +82,7 @@ export class UsersService {
   //   return newUser;
   // }
   async create(data: CreateUserDto) {
-    const newUser = this.userRepo.create(data);
+    const newUser = this.userRepo.create(data); // guarda temporalmente en memoria
     // * esta seria la forma de  encriptar pero como cree un hook en la entidad user.entity.ts no es necesario
     // const hashPassword = await bcrypt.hash(newUser.password, 10);
     // newUser.password = hashPassword;
